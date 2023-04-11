@@ -29,34 +29,21 @@ const run = async () => {
 
 		console.log(parsedArgs.link) // Output: 123
 
-		await page.goto('https://www.facebook.com/' + parsedArgs.link, { waitUntil: 'networkidle0' })
-		await page.waitForTimeout(1000)
+		await page.goto('https://www.facebook.com/' + parsedArgs.link)
 
 		console.log(parsedArgs.link, 'aaaaaaaaaa') // Output: 123
 
 		// Scroll
-		let loop = 0
-		while (loop < parsedArgs.post + 10) {
-			const selector = await page.$$(
-				`div[aria-posinset="${parsedArgs.post}"] div[aria-label="Leave a comment"]:nth-of-type(1)`
-			)
-			console.log(selector.length)
-			if (selector.length > 0) {
-				break;
-			} else{
-				for (let index = 0; index < 2; index++) {
-					await page.waitForTimeout(1000)
-					await page.evaluate(() => {
-						setTimeout(() => {
-							window.scrollTo({
-								top: window.pageYOffset + 1000,
-								behavior: 'smooth',
-							})
-						}, 100) // delay for 1 second before scrolling
+		for (let index = 0; index < 6; index++) {
+			await page.waitForTimeout(1000)
+			await page.evaluate(() => {
+				setTimeout(() => {
+					window.scrollTo({
+						top: window.pageYOffset + 50000,
+						behavior: 'smooth',
 					})
-				}
-			}
-			loop++
+				}, 100) // delay for 1 second before scrolling
+			})
 		}
 		// for (let index = 0; index < 5; index++) {
 		// 	await page.waitForTimeout(1000)
@@ -77,29 +64,60 @@ const run = async () => {
 		// 		})
 		// 	}, 1000) // delay for 1 second before scrolling
 		// })
-		await page.waitForTimeout(5000) 
+		// await page.waitForTimeout(1000) // random
 
 		// Comment
-		const selector = await page.$$(
-			`div[aria-posinset="${parsedArgs.post}"] div[aria-label="Leave a comment"]:nth-of-type(1)`
+		const leaveComment = await page.$$eval(
+			`div[aria-posinset="${parsedArgs.val1}"] div[aria-label="Leave a comment"]:nth-of-type(1)`,
+			// 'div[aria-label="Leave a comment"]',
+			element => element.length
 		)
-		console.log(selector)
-		if (selector.length > 0) {
-			await page.waitForTimeout(1000) 
-			await selector[0].click()
-			console.log('COMMENT!')
-			try {
-				await page.waitForSelector(`div[aria-label='Write a comment']`, { timeout: 2000 })
-			} catch (error) {
-				console.log('Selector not open dialog comment')
-			}
-			await page.keyboard.type(parsedArgs.type, { delay: 100 });
-			await page.waitForTimeout(1000);
-			await page.keyboard.press('Enter');
-			await page.keyboard.press('Escape');
-		} else {
-			console.log(`Element at index ${parsedArgs.post} not found`);
+		console.log('1')
+		console.log(leaveComment)
 
+		const countComment = await page.$$eval(
+			'div[aria-label="Write a comment…"]',
+			element => element.length
+		)
+
+		console.log('2')
+		console.log(countComment)
+
+		const elementToInteract = leaveComment || countComment
+		console.log(`elementToInteract ${elementToInteract}`)
+
+		if (countComment > 0) {
+			const selectorsComment = await page.$$(
+				`div[aria-posinset="${parsedArgs.val1}"] div[aria-label="Leave a comment"]:nth-of-type(1)`
+			)
+			await page.waitForTimeout(1000)
+
+			console.log(selectorsComment, 'SELECTOR COMMENT')
+
+			await page.waitForTimeout(1000)
+
+			if (parsedArgs.val2) {
+				console.log(parsedArgs.val2, 'asdasd')
+
+				// jika ingin comment spesifik post
+				const selector = selectorsComment[parsedArgs.val2]
+				if (selector) {
+					await selector.click()
+					await page.waitForTimeout(1000)
+					await page.keyboard.type(parsedArgs.val1, { delay: 100 })
+					await page.waitForTimeout(1000)
+					await page.keyboard.press('Enter')
+					await page.keyboard.press('Escape')
+				} else {
+					console.log(`Element at index ${parsedArgs.val2} not found`)
+				}
+			} else {
+				for await (const selector of selectorsComment) {
+					await selector.type(parsedArgs.val1, { delay: 10 })
+					await page.waitForTimeout(1000)
+					await page.keyboard.press('Enter')
+				}
+			}
 
 			// if (parsedArgs.val2) {
 			// 	console.log(parsedArgs.val2, 'asdasd')

@@ -1,14 +1,14 @@
 {
-	"j63aic8": {
-		"code": 0,
-		"msg": "success",
-		"data": {
-			"ws": {
-				"puppeteer": "ws://127.0.0.1:42285/devtools/browser/67e756dc-deee-4031-8021-25936f2ad961",
-				"selenium": "127.0.0.1:42285"
-			},
-			"debug_port": "42285",
-			"webdriver": "C:\\Users\\USER\\AppData\\Roaming\\adspower_global\\cwd_global\\chrome_108\\chromedriver.exe"
-		}
-	}
+	"j5vvm2b": {
+        "code": 0,
+        "msg": "success",
+        "data": {
+            "ws": {
+                "puppeteer": "ws://127.0.0.1:50655/devtools/browser/f58487b8-874f-4198-ae28-2e443c4d719b",
+                "selenium": "127.0.0.1:50655"
+            },
+            "debug_port": "50655",
+            "webdriver": "C:\\Users\\HP\\AppData\\Roaming\\adspower_global\\cwd_global\\chrome_108\\chromedriver.exe"
+        }
+    }
 }

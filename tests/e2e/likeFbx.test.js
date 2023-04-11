@@ -40,46 +40,41 @@ const run = async () => {
 
 		console.log(parsedArgs.link) // Output: 123
 
-		await page.goto('https://www.facebook.com/' + parsedArgs.link, { waitUntil: 'networkidle0' })
-		await page.waitForTimeout(1000)
+		await page.goto('https://www.facebook.com/' + parsedArgs.link)
+
 		console.log(parsedArgs.link, 'aaaaaaaaaa') // Output: 123
 
 		// Scroll
-		let loop = 0
-		while (loop < parsedArgs.post + 10) {
-			const selector = await page.$$(
-				`div[aria-posinset="${parsedArgs.post}"] > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div[aria-label="Like"]:nth-of-type(1)`
-			)
-			console.log(selector.length)
-			console.log('x')
-			if (selector.length > 0) {
-				break;
-			} else{
-				for (let index = 0; index < 2; index++) {
-					await page.waitForTimeout(1000)
-					await page.evaluate(() => {
-						setTimeout(() => {
-							window.scrollTo({
-								top: window.pageYOffset + 1000,
-								behavior: 'smooth',
-							})
-						}, 100) // delay for 1 second before scrolling
+		for (let index = 0; index < 6; index++) {
+			await page.waitForTimeout(1000)
+			await page.evaluate(() => {
+				setTimeout(() => {
+					window.scrollTo({
+						top: window.pageYOffset + 50000,
+						behavior: 'smooth',
 					})
-				}
-			}
-			loop++
+				}, 100) // delay for 1 second before scrolling
+			})
 		}
+		await page.evaluate(() => {
+			setTimeout(() => {
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth',
+				})
+			}, 1000) // delay for 1 second before scrolling
+		})
 		await page.waitForTimeout(1000) // random
 
 		// Like
 		const countLike = await page.$$eval(
-			`div[aria-posinset="${parsedArgs.post}"] > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div[aria-label="Like"]:nth-of-type(1)`,
+			`div[aria-posinset="${parsedArgs.post}"] div[aria-label="Like"]:nth-of-type(1)`,
 			element => element.length
 		)
 		console.log('1')
 
 		const countSuka = await page.$$eval(
-			`div[aria-posinset="${parsedArgs.post}"] > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div[aria-label="Suka"]:nth-of-type(1)`,
+			`div[aria-posinset="${parsedArgs.post}"] div[aria-label="Suka"]:nth-of-type(1)`,
 			element => element.length
 		)
 		console.log('2')
@@ -94,10 +89,10 @@ const run = async () => {
 			// await page.waitForSelector("div[aria-label='Suka']", {visible: true});
 
 			const selectorsSuka = await page.$$(
-				`div[aria-posinset="${parsedArgs.post}"] > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div[aria-label="Suka"]:nth-of-type(1)`
+				`div[aria-posinset="${parsedArgs.post}"] div[aria-label="Suka"]:nth-of-type(1)`
 			)
 			const selectorsLike = await page.$$(
-				`div[aria-posinset="${parsedArgs.post}"] > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div[aria-label="Like"]:nth-of-type(1)`
+				`div[aria-posinset="${parsedArgs.post}"] div[aria-label="Like"]:nth-of-type(1)`
 			)
 
 			const elementToLike =
